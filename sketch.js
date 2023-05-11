@@ -1,7 +1,7 @@
 let ant1, ant2;
 
 let ants = [];
-let antCount = 1000;
+let antCount = 500;
 
 let antsPlusPlayer = [];
 
@@ -10,6 +10,10 @@ let goalCount = 1;
 
 let width = 1200;
 let height = 900;
+
+let isMouseOver = false;
+
+let goal = null;
 
 function setup() {
   width = windowWidth;
@@ -71,26 +75,47 @@ function draw() {
     drawGoals(goals[i]);
   }
 
-  //   ant1.draw();
-  //   ant1.control();
-  //   ant1.sendOutInformation(antsPlusPlayer);
-
   for (let i = 0; i < ants.length; i++) {
     ants[i].draw();
     ants[i].moveObject(width, height);
     ants[i].sendOutInformation(antsPlusPlayer);
   }
+  if (isMouseOver) {
+    drawPopup(this.goal);
+  }
+}
+
+function drawPopup(goal) {
+  // Set the position of the popup relative to the mouse cursor
+
+  let popupX = mouseX;
+  let popupY = mouseY;
+
+  // Draw the popup
+  fill(255);
+  rect(popupX, popupY, 150, 35);
+
+  // Draw the text inside the popup
+  fill(0);
+  textAlign(CENTER, CENTER);
+  text(`${goal.name} health: ${goal.health}`, popupX, popupY, 150, 35);
+}
+
+function mouseMoved() {
+  for (let i = 0; i < goals.length; i++) {
+    const goal = goals[i];
+    let distance = dist(mouseX, mouseY, goal.x, goal.y);
+    if (distance <= 80) {
+      isMouseOver = true;
+      this.goal = goal;
+      return;
+    } else {
+      isMouseOver = false;
+      this.goal = null;
+    }
+  }
 }
 
 function mouseClicked() {
   // Code to execute when the mouse is clicked
-  for (let i = 0; i < goals.length; i++) {
-    const goal = goals[i];
-    let distance = dist(mouseX, mouseY, goal.x, goal.y);
-
-    // Check if the mouse click is inside the ellipse
-    if (distance <= 80) {
-      console.log(`${goal.name}'s Health: ${goal.health}`);
-    }
-  }
 }

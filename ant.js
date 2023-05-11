@@ -2,7 +2,7 @@ class Ant {
   constructor(goals, x, y, colour) {
     this.x = x;
     this.y = y;
-    this.speed = 15;
+    this.speed = 25;
     this.size = 10;
     this.angle = 0;
     this.colour = colour;
@@ -125,8 +125,8 @@ class Ant {
       this.x += dx;
       this.y += dy;
     } else {
-      this.x += random(-0.5, 0.5) * this.speed;
-      this.y += random(-0.5, 0.5) * this.speed;
+      this.x += cos(random(0, 360)) * this.speed;
+      this.y += sin(random(0, 360)) * this.speed;
     }
 
     if (this.x < -this.size / 2) {
@@ -141,6 +141,13 @@ class Ant {
     if (this.y > height + this.size / 2) {
       this.y = -this.size / 2;
     }
+
+    // if (this.x < -this.size / 2 || this.x > width + this.size / 2) {
+    //   this.angle = 180 - this.angle;
+    // }
+    // if (this.y < -this.size / 2 || this.y > height + this.size / 2) {
+    //   this.angle = 360 - this.angle;
+    // }
 
     this.checkForGoals();
   }
