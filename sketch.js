@@ -21,6 +21,7 @@ function setup() {
       (goal = {
         x: random(50, width / 2),
         y: random(50, height / 2),
+        health: 5000,
         size: 80,
         colour: [255, 0, 0],
         name: "target:" + (i + 1),
@@ -61,6 +62,12 @@ function draw() {
   background(200);
 
   for (let i = 0; i < goals.length; i++) {
+    if (goals[i].name != "home") {
+      if (goals[i].health <= 0) {
+        continue;
+      }
+    }
+
     drawGoals(goals[i]);
   }
 
@@ -72,5 +79,18 @@ function draw() {
     ants[i].draw();
     ants[i].moveObject(width, height);
     ants[i].sendOutInformation(antsPlusPlayer);
+  }
+}
+
+function mouseClicked() {
+  // Code to execute when the mouse is clicked
+  for (let i = 0; i < goals.length; i++) {
+    const goal = goals[i];
+    let distance = dist(mouseX, mouseY, goal.x, goal.y);
+
+    // Check if the mouse click is inside the ellipse
+    if (distance <= 80) {
+      console.log(`${goal.name}'s Health: ${goal.health}`);
+    }
   }
 }

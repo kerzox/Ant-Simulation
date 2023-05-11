@@ -2,7 +2,7 @@ class Ant {
   constructor(goals, x, y, colour) {
     this.x = x;
     this.y = y;
-    this.speed = 5;
+    this.speed = 15;
     this.size = 10;
     this.angle = 0;
     this.colour = colour;
@@ -37,6 +37,9 @@ class Ant {
   checkForGoals() {
     for (let i = 0; i < this.goals.length; i++) {
       const goal = this.goals[i];
+      if (goal.health <= 0) {
+        continue;
+      }
       const distanceX = this.x - goal.x;
       const distanceY = this.y - goal.y;
       const distance = sqrt(distanceX * distanceX + distanceY * distanceY);
@@ -47,6 +50,7 @@ class Ant {
           this.goingHome = true;
           this.colour = [0, 255, 0];
           this.moveTowards(this.home);
+          goal.health--;
         } else {
           this.colour = [255, 255, 255];
           this.goingHome = false;
@@ -117,7 +121,7 @@ class Ant {
     const dx = cos(angle) * this.speed;
     const dy = sin(angle) * this.speed;
 
-    if (random() < 0.45) {
+    if (random() < 0.75) {
       this.x += dx;
       this.y += dy;
     } else {
