@@ -84,7 +84,7 @@ function draw() {
 
   for (let i = 0; i < ants.length; i++) {
     ants[i].draw();
-    ants[i].moveObject(width, height);
+    ants[i].moveObject(width, height, Math.random());
     ants[i].sendOutInformation(antsPlusPlayer);
   }
   if (isMouseOver) {

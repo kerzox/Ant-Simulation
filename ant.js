@@ -54,6 +54,7 @@ class Ant {
         } else {
           this.colour = [255, 255, 255];
           this.goingHome = false;
+          this.moveTowards({ x: -this.x, y: -this.y });
         }
       } else {
         this.updateScore(goal.name, this.getScore(goal.name) + 1);
@@ -81,7 +82,8 @@ class Ant {
     for (let i = 0; i < ants.length; i++) {
       if (ants[i] != this) {
         if (this.inDistance(ants[i])) {
-          this.goals.forEach((goal) => {
+          for (let j = 0; j < goals.length; j++) {
+            const goal = goals[j];
             if (goal.health > 0) {
               const otherAntScore = ants[i].getScore(goal.name);
               const ourScore = this.getScore(goal.name);
@@ -90,6 +92,7 @@ class Ant {
                   if (goal.name == "home") {
                     ants[i].updateScore(goal.name, ourScore);
                     ants[i].moveTowards(this);
+                    return;
                   }
                 } else if (goal.name != "home") {
                   ants[i].updateScore(goal.name, ourScore);
@@ -97,7 +100,7 @@ class Ant {
                 }
               }
             }
-          });
+          }
         }
       }
     }
@@ -119,17 +122,17 @@ class Ant {
     this.scoreBoard.set(name, value);
   }
 
-  moveObject(width, height) {
+  moveObject(width, height, ran) {
     const angle = this.angle;
     const dx = cos(angle) * this.speed;
     const dy = sin(angle) * this.speed;
 
-    if (random() < 0.9) {
+    if (ran < 0.9) {
       this.x += dx;
       this.y += dy;
     } else {
-      this.x += cos(random(this.angle, 360)) * this.speed;
-      this.y += sin(random(this.angle, 360)) * this.speed;
+      this.x += cos(random(this.angle - 25, this.angle + 25)) * this.speed;
+      this.y += sin(random(this.angle - 25, this.angle + 25)) * this.speed;
     }
 
     if (this.x < -this.size / 2) {
