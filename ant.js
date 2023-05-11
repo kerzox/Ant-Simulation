@@ -2,7 +2,7 @@ class Ant {
   constructor(goals, x, y, colour) {
     this.x = x;
     this.y = y;
-    this.speed = 25;
+    this.speed = 5;
     this.size = 10;
     this.angle = 0;
     this.colour = colour;
@@ -57,6 +57,7 @@ class Ant {
         }
       } else {
         this.updateScore(goal.name, this.getScore(goal.name) + 1);
+
         if (goal.name == "home" && this.goingHome) {
           if (this.getScore(goal.name) >= (width + height) / 2) {
             this.goingHome = false;
@@ -81,17 +82,19 @@ class Ant {
       if (ants[i] != this) {
         if (this.inDistance(ants[i])) {
           this.goals.forEach((goal) => {
-            const otherAntScore = ants[i].getScore(goal.name);
-            const ourScore = this.getScore(goal.name);
-            if (otherAntScore > ourScore) {
-              if (ants[i].isGoingHome()) {
-                if (goal.name == "home") {
+            if (goal.health > 0) {
+              const otherAntScore = ants[i].getScore(goal.name);
+              const ourScore = this.getScore(goal.name);
+              if (otherAntScore > ourScore) {
+                if (ants[i].isGoingHome()) {
+                  if (goal.name == "home") {
+                    ants[i].updateScore(goal.name, ourScore);
+                    ants[i].moveTowards(this);
+                  }
+                } else if (goal.name != "home") {
                   ants[i].updateScore(goal.name, ourScore);
                   ants[i].moveTowards(this);
                 }
-              } else if (goal.name != "home") {
-                ants[i].updateScore(goal.name, ourScore);
-                ants[i].moveTowards(this);
               }
             }
           });
@@ -105,7 +108,7 @@ class Ant {
     const distanceY = Math.abs(ant.y - this.y + this.size / 2);
     const manhattanDistance = distanceX + distanceY;
 
-    return manhattanDistance <= 150;
+    return manhattanDistance <= 125;
   }
 
   getScore(name) {
@@ -121,26 +124,52 @@ class Ant {
     const dx = cos(angle) * this.speed;
     const dy = sin(angle) * this.speed;
 
-    if (random() < 0.75) {
+    if (random() < 0.9) {
       this.x += dx;
       this.y += dy;
     } else {
-      this.x += cos(random(0, 360)) * this.speed;
-      this.y += sin(random(0, 360)) * this.speed;
+      this.x += cos(random(this.angle, 360)) * this.speed;
+      this.y += sin(random(this.angle, 360)) * this.speed;
     }
 
     if (this.x < -this.size / 2) {
-      this.x = width + this.size / 2;
+      this.x = this.size / 2;
+      this.moveTowards({
+        x: width / 2,
+        y: random(0, height / 2),
+      });
+    } else if (this.x > width + this.size / 2 - 25) {
+      this.x = width - this.size / 2 - 25;
+      this.moveTowards({
+        x: width / 2,
+        y: random(0, height / 2),
+      });
+    } else if (this.y < -this.size / 2) {
+      this.y = this.size / 2;
+      this.moveTowards({
+        x: random(0, width / 2),
+        y: height / 2,
+      });
+    } else if (this.y > height + this.size / 2 - 25) {
+      this.y = height - this.size / 2 - 25;
+      this.moveTowards({
+        x: random(0, width / 2),
+        y: height / 2,
+      });
     }
-    if (this.x > width + this.size / 2) {
-      this.x = -this.size / 2;
-    }
-    if (this.y < -this.size / 2) {
-      this.y = height + this.size / 2;
-    }
-    if (this.y > height + this.size / 2) {
-      this.y = -this.size / 2;
-    }
+
+    // if (this.x < -this.size / 2) {
+    //   this.x = width + this.size / 2;
+    // }
+    // if (this.x > width + this.size / 2) {
+    //   this.x = -this.size / 2;
+    // }
+    // if (this.y < -this.size / 2) {
+    //   this.y = height + this.size / 2;
+    // }
+    // if (this.y > height + this.size / 2) {
+    //   this.y = -this.size / 2;
+    // }
 
     // if (this.x < -this.size / 2 || this.x > width + this.size / 2) {
     //   this.angle = 180 - this.angle;
@@ -152,7 +181,7 @@ class Ant {
     this.checkForGoals();
   }
 
-  control() {
+  control(width, height) {
     this.setColour(255, 0, 0);
     // Rotate the object based on key press
     if (keyIsDown(LEFT_ARROW)) {
@@ -167,6 +196,7 @@ class Ant {
     if (keyIsDown(DOWN_ARROW)) {
       this.y += this.speed;
     }
+
     this.checkForGoals();
   }
 

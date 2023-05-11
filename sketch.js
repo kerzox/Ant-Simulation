@@ -6,7 +6,7 @@ let antCount = 500;
 let antsPlusPlayer = [];
 
 let goals = [];
-let goalCount = 1;
+let goalCount = 2;
 
 let width = 1200;
 let height = 900;
@@ -23,8 +23,8 @@ function setup() {
   for (let i = 0; i < goalCount; i++) {
     goals.push(
       (goal = {
-        x: random(50, width / 2),
-        y: random(50, height / 2),
+        x: random(50, width - 50),
+        y: random(50, height - 50),
         health: 5000,
         size: 80,
         colour: [255, 0, 0],
@@ -42,6 +42,13 @@ function setup() {
       name: "home",
     })
   );
+
+  //   ant1 = new Ant(
+  //     goals,
+  //     random(0, width - 50),
+  //     random(0, height - 50),
+  //     [255, 255, 255]
+  //   );
 
   for (let i = 0; i < antCount; i++) {
     ants.push(
