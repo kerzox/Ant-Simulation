@@ -1,9 +1,9 @@
 class Ant {
-  constructor(goals, x, y, colour) {
+  constructor(goals, x, y, size, speed, colour) {
     this.x = x;
     this.y = y;
-    this.speed = 5;
-    this.size = 10;
+    this.speed = speed;
+    this.size = size;
     this.angle = 0;
     this.colour = colour;
     this.goals = goals;
@@ -48,24 +48,18 @@ class Ant {
         this.updateScore(goal.name, 0);
         if (goal.name.includes("target")) {
           this.goingHome = true;
-          this.colour = [0, 255, 0];
+          //this.colour = [0, 255, 0];
           this.moveTowards(this.home);
           goal.health--;
+          break;
         } else {
-          this.colour = [255, 255, 255];
+          //this.colour = [255, 255, 255];
           this.goingHome = false;
           this.moveTowards({ x: -this.x, y: -this.y });
+          break;
         }
       } else {
         this.updateScore(goal.name, this.getScore(goal.name) + 1);
-
-        if (goal.name == "home" && this.goingHome) {
-          if (this.getScore(goal.name) >= (width + height) / 2) {
-            this.goingHome = false;
-            this.colour = [255, 0, 0];
-            this.moveTowards({ x: -this.x, y: -this.y });
-          }
-        }
       }
     }
   }
@@ -92,11 +86,12 @@ class Ant {
                   if (goal.name == "home") {
                     ants[i].updateScore(goal.name, ourScore);
                     ants[i].moveTowards(this);
-                    return;
+                    break;
                   }
                 } else if (goal.name != "home") {
                   ants[i].updateScore(goal.name, ourScore);
                   ants[i].moveTowards(this);
+                  break;
                 }
               }
             }
@@ -111,7 +106,7 @@ class Ant {
     const distanceY = Math.abs(ant.y - this.y + this.size / 2);
     const manhattanDistance = distanceX + distanceY;
 
-    return manhattanDistance <= 125;
+    return manhattanDistance <= 80;
   }
 
   getScore(name) {
@@ -127,7 +122,7 @@ class Ant {
     const dx = cos(angle) * this.speed;
     const dy = sin(angle) * this.speed;
 
-    if (ran < 0.9) {
+    if (ran < 0.8) {
       this.x += dx;
       this.y += dy;
     } else {

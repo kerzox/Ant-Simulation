@@ -1,7 +1,7 @@
 let ant1, ant2;
 
 let ants = [];
-let antCount = 500;
+let antCount = 1000;
 
 let antsPlusPlayer = [];
 
@@ -56,12 +56,20 @@ function setup() {
         goals,
         random(0, width - 50),
         random(0, height - 50),
-        [255, 255, 255]
+        random(5, 10),
+        random(3, 6),
+        [getColour(), getColour(), getColour()]
       )
     );
   }
 
   antsPlusPlayer = [...ants];
+}
+
+function getColour() {
+  if (random() > 0.5) {
+    return 255;
+  } else return 0;
 }
 
 function drawGoals(obj) {
